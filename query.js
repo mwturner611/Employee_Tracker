@@ -1,5 +1,6 @@
 // Require mysql 
 var mysql = require("mysql");
+var questions = require("./questions.js");
 
 // create route to mysql database on local host
 var connection = mysql.createConnection({
@@ -21,32 +22,40 @@ connection.connect(function(err){
 // DEFINE QUERIES AS FUNCTIONS:
 
 // All EEs as a table
-function eeQuery(){
+function eesQuery(){
     connection.query(
         "SELECT * FROM employee", function(err,results){
             if(err) throw err;
 
             console.table(results)
+
+            questions.kickoff();
         });
 };
 
+
+
 // All Departments as a table
-function deptQuery(){
+function deptsQuery(){
     connection.query(
         "SELECT * FROM department", function(err,results){
             if(err) throw err;
 
             console.table(results);
+
+            questions.kickoff();
         });
 };
 
 // All Roles as a table
-function roleQuery(){
+function rolesQuery(){
     connection.query(
         "SELECT * FROM role", function(err,results){
             if(err) throw err;
 
             console.table(results);
+
+            questions.kickoff();
         });
 };
 
@@ -70,13 +79,15 @@ function orgChartQuery (){
     connection.query(query, function(err,results){
             if(err) throw err;
             console.table(results);
+
+            questions.kickoff();
         });
 }
 
 
 
 // EXPORT ALL QUERY FUNCTIONS
-module.exports.eeQuery = eeQuery;
-module.exports.deptQuery = deptQuery;
-module.exports.roleQuery = roleQuery;
+module.exports.eesQuery = eesQuery;
+module.exports.deptsQuery = deptsQuery;
+module.exports.rolesQuery = rolesQuery;
 module.exports.orgChartQuery = orgChartQuery;

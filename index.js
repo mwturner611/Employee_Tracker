@@ -1,5 +1,4 @@
 // Required packages and files
-var inquirer = require("inquirer");
 var table = require("console.table");
 const env = require("dotenv").config({path: '.env'});
 var figlet = require("figlet");
@@ -8,9 +7,9 @@ var questions = require("./questions.js")
 
 
 // Queries to test
-// query.eeQuery();
-// query.deptQuery();
-// query.roleQuery();
+// query.eesQuery();
+// query.deptsQuery();
+// query.rolesQuery();
 // query.orgChartQuery();
 
 // figlet to design intro
@@ -22,5 +21,8 @@ function start(){
             return;
         }
         console.log(data)
+        questions.kickoff();
     });
 }
+
+start();
