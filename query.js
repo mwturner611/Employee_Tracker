@@ -20,6 +20,7 @@ connection.connect(function(err){
     if (err) throw err;
 })
 
+
 // When stuff goes wrong
 function error(){
     console.log("Whoops, that didn't work. Please try again :-)")
@@ -55,13 +56,9 @@ function eeQuery(lastName){
         console.table(results);
 
         questions.kickoff();
-        };
-    }
-        
+        }} 
     )
-}
-
-
+};
 
 // All Departments as a table
 function deptsQuery(){
@@ -75,6 +72,26 @@ function deptsQuery(){
         });
 };
 
+// Specific department
+function deptQuery(dept){
+    var query = "SELECT * FROM department WHERE ?";
+
+    connection.query(query, {name: dept}, function(err, results) {
+        if(err){throw err}
+        else if(results.length === 0){
+            error();
+
+            questions.view();
+        }
+        else{
+        console.table(results);
+
+        questions.kickoff();
+        }} 
+    )
+};
+
+
 // All Roles as a table
 function rolesQuery(){
     connection.query(
@@ -85,6 +102,25 @@ function rolesQuery(){
 
             questions.kickoff();
         });
+};
+
+// Specific role
+function roleQuery(role){
+    var query = "SELECT * FROM role WHERE ?";
+
+    connection.query(query, {title: role}, function(err, results) {
+        if(err){throw err}
+        else if(results.length === 0){
+            error();
+
+            questions.view();
+        }
+        else{
+        console.table(results);
+
+        questions.kickoff();
+        }} 
+    )
 };
 
 // Create an org chart with EE's manager/title/dept
@@ -120,3 +156,6 @@ module.exports.eeQuery = eeQuery;
 module.exports.deptsQuery = deptsQuery;
 module.exports.rolesQuery = rolesQuery;
 module.exports.orgChartQuery = orgChartQuery;
+module.exports.deptQuery = deptQuery;
+module.exports.roleQuery = roleQuery;
+module.exports.connection = connection;

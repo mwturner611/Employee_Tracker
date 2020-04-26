@@ -1,6 +1,7 @@
 // require inquirer
 var inquirer = require("inquirer");
 var query = require("./query.js");
+var figlet = require("figlet");
 
 // Ask starting questions
 function kickoff(){
@@ -34,7 +35,7 @@ function view(){
         name: "view",
         type: "list",
         message: "What would you like to see?",
-        choices: ["Organizational Chart","All Employees","All Departments","All Roles","A Specific EE","A Specific Department","A Specific Role"]
+        choices: ["Organizational Chart","All Employees","All Departments","All Roles","A Specific EE","Quit"]
     })
     .then(function(answer){
         switch(answer.view){
@@ -53,17 +54,16 @@ function view(){
             case "A Specific EE":
                 employeeSearch();
                 break;
-            case "A Specific Department":
-                console.log("build this query");
+            case "Quit":
+                quit();
                 break;
-            case "A Specific Role":
-                console.log("build this query");
-                break;
+
             
         }
     })
-}
+};
 
+// search for specific EE
 function employeeSearch(){
     inquirer.prompt({
         name: "lastName",
@@ -73,6 +73,55 @@ function employeeSearch(){
     .then(function(answer){
         query.eeQuery(answer.lastName);
     })
+}
+
+// search for specific department
+function deptSearch(){
+    inquirer.prompt({
+        name: "dept",
+        type: "Input",
+        message: "What department name would you like to see?",
+    })
+    .then(function(answer){
+        query.deptQuery(answer.dept);
+    })
+}
+
+// search for specific department
+function roleSearch(){
+    inquirer.prompt({
+        name: "role",
+        type: "Input",
+        message: "What is the title of the role you are looking for?",
+    })
+    .then(function(answer){
+        query.roleQuery(answer.role);
+    })
+}
+
+// search for specific department
+function roleSearch(){
+    inquirer.prompt({
+        name: "role",
+        type: "Input",
+        message: "What is the title of the role you are looking for?",
+    })
+    .then(function(answer){
+        query.roleQuery(answer.role);
+    })
+}
+
+function quit(){
+    figlet('Thanks for using \n HR Data Base!', function(err,data){
+        if(err) {
+            console.log("something went wrong....");
+            console.dir(err);
+            return;
+        }
+        console.log(data)
+        
+        query.connection.end();
+    });
 }
 
 function transfer(){
@@ -102,34 +151,8 @@ function transfer(){
     // })
 }
 
-function quit(){
 
-    console.log("Write Quit Function")
-    // inquirer.prompt({
-    //     name: "start",
-    //     type: "list",
-    //     message: "What would you like to do?",
-    //     choices: ["View","Add New","Update Existing","Quit"]
-    // })
-    // .then(function(answer){
-    //     switch(answer){
-    //         case "View":
-    //             view();
-    //             break;
-    //         case "Add New":
-    //             add();
-    //             break;
-    //         case "Update Existing":
-    //             update();
-    //             break;
-    //         case "Quit":
-    //             quit();
-    //             break;
-    //     }
-    // })
-}
 function add(){
-
     console.log("Write Add Function")
     // inquirer.prompt({
     //     name: "start",
@@ -154,6 +177,7 @@ function add(){
     //     }
     // })
 }
+
 // Export inquirer functions
 module.exports.kickoff = kickoff;
 module.exports.view = view;
