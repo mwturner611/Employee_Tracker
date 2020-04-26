@@ -51,7 +51,7 @@ function view(){
                 query.rolesQuery();
                 break;
             case "A Specific EE":
-                console.log("build this query");
+                employeeSearch();
                 break;
             case "A Specific Department":
                 console.log("build this query");
@@ -64,8 +64,18 @@ function view(){
     })
 }
 
-function transfer(){
+function employeeSearch(){
+    inquirer.prompt({
+        name: "lastName",
+        type: "Input",
+        message: "Enter the last name of the EE you would like to see",
+    })
+    .then(function(answer){
+        query.eeQuery(answer.lastName);
+    })
+}
 
+function transfer(){
     console.log("Write Transfer function")
 
     // inquirer.prompt({

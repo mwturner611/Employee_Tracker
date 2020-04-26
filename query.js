@@ -2,6 +2,7 @@
 var mysql = require("mysql");
 var questions = require("./questions.js");
 
+
 // create route to mysql database on local host
 var connection = mysql.createConnection({
     host: "localhost",
@@ -19,6 +20,12 @@ connection.connect(function(err){
     if (err) throw err;
 })
 
+// When stuff goes wrong
+function error(){
+    console.log("Whoops, that didn't work. Please try again :-)")
+};
+
+
 // DEFINE QUERIES AS FUNCTIONS:
 
 // All EEs as a table
@@ -32,6 +39,27 @@ function eesQuery(){
             questions.kickoff();
         });
 };
+
+// Specific employee
+function eeQuery(lastName){
+    var query = "SELECT * FROM employee WHERE ?";
+
+    connection.query(query, {last_name: lastName}, function(err, results) {
+        if(err){throw err}
+        else if(results.length === 0){
+            error();
+
+            questions.view();
+        }
+        else{
+        console.table(results);
+
+        questions.kickoff();
+        };
+    }
+        
+    )
+}
 
 
 
@@ -88,6 +116,7 @@ function orgChartQuery (){
 
 // EXPORT ALL QUERY FUNCTIONS
 module.exports.eesQuery = eesQuery;
+module.exports.eeQuery = eeQuery;
 module.exports.deptsQuery = deptsQuery;
 module.exports.rolesQuery = rolesQuery;
 module.exports.orgChartQuery = orgChartQuery;
