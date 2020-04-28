@@ -9,4 +9,13 @@ class Employee{
     }
 }
 
-module.exports = Employee;
+class Department{
+    constructor(id,name){
+        this.id = id;
+        this.name = name;
+    }
+}
+
+module.exports.Role = Role;
+module.exports.Department = Department;
+module.exports.Employee = Employee;
