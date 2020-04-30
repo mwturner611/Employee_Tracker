@@ -2,6 +2,7 @@
 var inquirer = require("inquirer");
 var query = require("./query.js");
 var figlet = require("figlet");
+var classes = require("./class.js")
 
 // Ask starting questions
 function kickoff(){
@@ -75,42 +76,8 @@ function employeeSearch(){
     })
 }
 
-// search for specific department
-function deptSearch(){
-    inquirer.prompt({
-        name: "dept",
-        type: "Input",
-        message: "What department name would you like to see?",
-    })
-    .then(function(answer){
-        query.deptQuery(answer.dept);
-    })
-}
 
-// search for specific department
-function roleSearch(){
-    inquirer.prompt({
-        name: "role",
-        type: "Input",
-        message: "What is the title of the role you are looking for?",
-    })
-    .then(function(answer){
-        query.roleQuery(answer.role);
-    })
-}
-
-// search for specific department
-function roleSearch(){
-    inquirer.prompt({
-        name: "role",
-        type: "Input",
-        message: "What is the title of the role you are looking for?",
-    })
-    .then(function(answer){
-        query.roleQuery(answer.role);
-    })
-}
-
+// quit function
 function quit(){
     figlet('Thanks for using \n HR Data Base!', function(err,data){
         if(err) {
@@ -151,32 +118,75 @@ function transfer(){
     // })
 }
 
-
+// Add function
 function add(){
-    console.log("Write Add Function")
-    // inquirer.prompt({
-    //     name: "start",
-    //     type: "list",
-    //     message: "What would you like to do?",
-    //     choices: ["View","Add New","Update Existing","Quit"]
-    // })
-    // .then(function(answer){
-    //     switch(answer){
-    //         case "View":
-    //             view();
-    //             break;
-    //         case "Add New":
-    //             add();
-    //             break;
-    //         case "Update Existing":
-    //             update();
-    //             break;
-    //         case "Quit":
-    //             quit();
-    //             break;
-    //     }
-    // })
+    inquirer.prompt({
+        name: "add",
+        type: "list",
+        message: "What would you like to add?",
+        choices: ["Employee","Role","Department","Quit"]
+    })
+    .then(function(answer){
+        switch(answer.add){
+            case "Employee":
+                query.rolesList();
+                break;
+            case "Role":
+                newRole();
+                break;
+            case "Department":
+                newDepartment();
+                break;
+            case "Quit":
+                quit();
+                break;
+        }
+    })
 }
+
+
+
+// Add a new employee function
+function newEmployee(roles,managers){
+    var employee = [];
+    inquirer.prompt([
+        {
+            name: "fName",
+            type: "input",
+            message: "What is the Employee's first name?",
+        },
+        {
+            name: "lName",
+            type: "input",
+            message: "What is the Employee's last name?",
+        },
+        {
+            name: "role_id",
+            type: "list",
+            message: "Which role is the Employee filling?",
+            choices: roles
+        },
+        {
+            name: "manager",
+            type: "list",
+            message: "Who will be the manager?",
+            choices: managers
+        },
+
+    ])
+    .then(function(answer){
+        var role_id = parseInt((answer.role_id).slice(0,3));
+        var mgr_id = parseInt((answer.manager).slice(0,3));
+        // employee.push(answer.fName,answer.lName,role_id,mgr_id)
+        employee = new classes.Employee(answer.fName,answer.lName,role_id,mgr_id);
+    })
+    .then(function(){
+        
+        query.addEmployee(employee);
+    })
+    
+    
+};
 
 // Export inquirer functions
 module.exports.kickoff = kickoff;
@@ -184,3 +194,4 @@ module.exports.view = view;
 module.exports.add = add;
 module.exports.transfer = transfer;
 module.exports.quit = quit;
+module.exports.newEmployee = newEmployee;

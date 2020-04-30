@@ -1,6 +1,7 @@
 // Require mysql 
 var mysql = require("mysql");
 var questions = require("./questions.js");
+var index = require("./index.js");
 
 
 // create route to mysql database on local host
@@ -104,6 +105,61 @@ function rolesQuery(){
         });
 };
 
+// Query on roles and managers, send arrays to newEmployee
+function rolesList(){
+    // epty arrays for roles and managers
+    var roles = [];
+    var mgrs = [];
+
+    // query to get id and role
+    var query1 = "SELECT id, title FROM role";
+
+    // query to get employees
+    var query2 = "SELECT first_name, role_id FROM employee WHERE SUBSTRING(role_id,3,1) = 1";
+
+    connection.query(query1, function(err,results){
+            if(err) throw err;
+
+            for (var i = 0; i < results.length; i++){
+                var newID = results[i].id;
+                var newTitle = results[i].title;
+                var idTitle = newID + " " + newTitle;
+                roles.push(idTitle);
+            }
+            connection.query(query2, function(err,results){
+                if(err) throw err;
+                
+                for (var i = 0; i < results.length; i++){
+                  var mgrName = results[i].first_name;
+                  var mgrID = results[i].role_id;
+                  var mgrNameID = mgrID + " " + mgrName;
+                  mgrs.push(mgrNameID);
+                
+
+                }
+            })
+            questions.newEmployee(roles,mgrs);
+
+            
+        });
+};
+
+// add EE to database 
+function addEmployee(employee){
+
+   connection.query("INSERT INTO employee SET ?",
+    {
+       first_name: employee.first_name,
+       last_name: employee.last_name,
+       role_id: employee.role_id,
+       manager_id: employee.manager_id    
+    },function(err,results) {
+        if(err){throw err}
+        console.log("Employee Added Successfully!")
+        index.start();
+    })
+  
+}
 // Specific role
 function roleQuery(role){
     var query = "SELECT * FROM role WHERE ?";
@@ -158,4 +214,6 @@ module.exports.rolesQuery = rolesQuery;
 module.exports.orgChartQuery = orgChartQuery;
 module.exports.deptQuery = deptQuery;
 module.exports.roleQuery = roleQuery;
+module.exports.rolesList = rolesList;
 module.exports.connection = connection;
+module.exports.addEmployee = addEmployee;
