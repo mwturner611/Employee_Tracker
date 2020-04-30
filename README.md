@@ -26,7 +26,6 @@
 * [Usage](#usage)
 * [License](#license)
 * [Contributing](#contributing)
-* [Tests](#tests)
 * [Contacts](#contacts)
 
 ## Installation
