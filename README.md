@@ -5,15 +5,14 @@
 <p>A simple command line application to SELECT/UPDATE/ADD employee info to and from a MySQL database</p>
 
 # Technologies Used
-<ul>
-    <li>Node.js<li>
-    <li>mySQL<li>
-    <li>JavaScript<li>
-    <li>NPM  - "inquirer"<li>
-    <li>NPM - "figlet"<li>
-    <li>NPM - "console.table"<li>
-    <li>NPM - "mysql"<li>
-<ul>
+* Node.js
+* mySQL
+* JavaScript
+* NPM  - "inquirer"
+* NPM - "figlet"
+* NPM - "console.table"
+* NPM - "mysql"
+
 
 # Demo
 <img src="images/demo.gif">
@@ -25,7 +24,6 @@
 * [Gif](#demo)
 * [Installation](#installation)
 * [Usage](#usage)
-* [Credits](#credits)
 * [License](#license)
 * [Contributing](#contributing)
 * [Tests](#tests)
