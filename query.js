@@ -175,6 +175,19 @@ function addRole(role){
     )
 }
 
+// Add a department
+function addDepartment(newDept){
+    connection.query("INSERT INTO department SET ?",
+    {
+        name: newDept.name
+    },function(err,results){
+        if(err){throw err}
+        console.log("Department Added Successfully!")
+        questions.kickoff();
+    }
+    )
+};
+
 // Specific role
 function roleQuery(role){
     var query = "SELECT * FROM role WHERE ?";
@@ -227,7 +240,7 @@ module.exports.eeQuery = eeQuery;
 module.exports.deptsQuery = deptsQuery;
 module.exports.rolesQuery = rolesQuery;
 module.exports.orgChartQuery = orgChartQuery;
-
+module.exports.addDepartment = addDepartment;
 module.exports.roleQuery = roleQuery;
 module.exports.rolesList = rolesList;
 module.exports.connection = connection;

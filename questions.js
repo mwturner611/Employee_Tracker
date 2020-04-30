@@ -144,6 +144,22 @@ function add(){
     })
 }
 
+// add a new department functino
+function newDepartment(){
+    var newDept = [];
+
+    inquirer.prompt({
+        name: "name",
+        type: "input",
+        message: "What is the name of your new department?"
+    })
+    .then(function(answer){
+        newDept = new classes.Department(answer.name);
+    })
+    .then(function(){
+        query.addDepartment(newDept);
+    })
+};
 
 // add a new role function
 function newRole(depts){
