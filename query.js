@@ -1,7 +1,8 @@
-// Require mysql 
+// Require packages and files 
 var mysql = require("mysql");
 var questions = require("./questions.js");
-
+const env = require("dotenv").config({path: '.env'});
+var table = require("console.table");
 
 
 // create route to mysql database on local host
@@ -22,7 +23,7 @@ connection.connect(function(err){
 })
 
 
-// When stuff goes wrong
+//Create an error function when user enters search with no results
 function error(){
     console.log("Whoops, that didn't work. Please try again :-)")
 };
@@ -30,7 +31,7 @@ function error(){
 
 // DEFINE QUERIES AS FUNCTIONS:
 
-// All EEs as a table
+// Query returns all employees
 function eesQuery(){
     connection.query(
         "SELECT * FROM employee", function(err,results){
@@ -42,11 +43,7 @@ function eesQuery(){
         });
 };
 
-
-
-
-
-// All Departments as a table
+//Query returns all Departments
 function deptsQuery(){
     connection.query(
         "SELECT * FROM department", function(err,results){
@@ -58,7 +55,7 @@ function deptsQuery(){
         });
 };
 
-// All Roles as a table
+//Query returns all roles
 function rolesQuery(){
     connection.query(
         "SELECT * FROM role", function(err,results){

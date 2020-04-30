@@ -1,4 +1,4 @@
-// Employee class
+// Employee class & constructor
 class Employee{
     constructor(first_name,last_name,role_id,manager_id){
         
@@ -9,12 +9,14 @@ class Employee{
     }
 }
 
+// department class & constructor
 class Department{
     constructor(name){
         this.name = name;
     }
 }
 
+// role class & constructor
 class Role{
     constructor(title,salary,department_id){
         this.title = title;

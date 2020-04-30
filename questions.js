@@ -2,7 +2,8 @@
 var inquirer = require("inquirer");
 var query = require("./query.js");
 var figlet = require("figlet");
-var classes = require("./class.js")
+var classes = require("./classes/class.js")
+var table = require("console.table");
 
 // Ask starting questions
 function kickoff(){
@@ -15,22 +16,26 @@ function kickoff(){
     .then(function(answer){
         switch(answer.start){
             case "View Reports":
+                // take user to view function
                 view();
                 break;
             case "Add a New EE/Role/Dept":
+                //take user to add function
                 add();
                 break;
             case "Transfer an Employee":
+                // query.js - gather EEs and roles before prompting user where to transfer EE
                 query.eeList();
                 break;
             case "Quit":
+                // Quit application
                 quit();
                 break;
         }
     })
 }
 
-// view options
+// Ask which report user would like view
 function view(){
     inquirer.prompt({
         name: "view",
@@ -41,21 +46,27 @@ function view(){
     .then(function(answer){
         switch(answer.view){
             case "Organizational Chart":
+                // query.js - run org chart report to console
                 query.orgChartQuery();
                 break;
             case "All Employees":
+                // query.js - run employees report to console
                 query.eesQuery();
                 break;
             case "All Departments":
+                // query.js - run depts report to console
                 query.deptsQuery();
                 break;
             case "All Roles":
+                // query.js - run roles report to console
                 query.rolesQuery();
                 break;
             case "A Specific EE":
+                // take user to employee search function
                 employeeSearch();
                 break;
             case "Quit":
+                // quit the application
                 quit();
                 break;
 
@@ -64,20 +75,22 @@ function view(){
     })
 };
 
-// search for specific EE
+// search for a specific EE
 function employeeSearch(){
+    // ask which employee the user would like to view
     inquirer.prompt({
         name: "lastName",
         type: "Input",
         message: "Enter the last name of the EE you would like to see",
     })
     .then(function(answer){
+        // query.js - send last name to employee query
         query.eeQuery(answer.lastName);
     })
 }
 
 
-// quit function
+// quit function posting a figlet and ending DB connection
 function quit(){
     figlet('Thanks for using \n HR Data Base!', function(err,data){
         if(err) {
@@ -92,7 +105,7 @@ function quit(){
 }
 
 
-// Add function
+// Add function allowing user to select what they want to add
 function add(){
     inquirer.prompt({
         name: "add",
@@ -103,22 +116,26 @@ function add(){
     .then(function(answer){
         switch(answer.add){
             case "Employee":
+                // query.js - gather available roles for user questions
                 query.rolesList();
                 break;
             case "Role":
+                // query.js - gather departments for user questions
                 query.deptsList();
                 break;
             case "Department":
+                // launch newDepartment function
                 newDepartment();
                 break;
             case "Quit":
+                // quit the application
                 quit();
                 break;
         }
     })
 }
 
-// add a new department functino
+// add a new department function
 function newDepartment(){
     var newDept = [];
 
@@ -135,7 +152,7 @@ function newDepartment(){
     })
 };
 
-// add a new role function
+// with all departments available for a list, ask user what role they would like to add
 function newRole(depts){
     var role = [];
 
@@ -148,7 +165,7 @@ function newRole(depts){
         {
             name:"salary",
             type: "input",
-            message: "What is the salary for this role?"
+            message: "What is the salary for this role (please enter a number with no symbol e.g. 100000)?"
         },
         {
             name:"dpt",
@@ -158,10 +175,13 @@ function newRole(depts){
         },
     ])
     .then(function(answer){
+        // get the dept_id from chosen department string, make it an int
         var dept_id = parseInt((answer.dpt).slice(0,3));
 
+        // make salary entered 
         var salary = parseInt(answer.salary);
-                
+           
+        // use Role class
         role = new classes.Role(answer.title,salary,dept_id);
     })
     .then(function(){
@@ -169,7 +189,7 @@ function newRole(depts){
     })
 };
 
-// transfer an employee to a new role
+// With all available ees and roles quried for lists, prompt the use to decide which employee to transfer to which new role
 function transfer(roles,ees){
     var ee_id = 0;
     var role_id = 0;
@@ -189,17 +209,19 @@ function transfer(roles,ees){
         },
     ])
     .then(function(answer){
+        // get the EE ID and Role ID from strings and make into integers.
         ee_id = parseInt((answer.ee).slice(0,3));
         role_id = parseInt((answer.role).slice(0,3));
     })
     .then(function(){
+        // pass IDs to query.js for update
         query.updateEE(ee_id,role_id)
     })
 
 };
 
 
-// Add a new employee function
+// With all available roles and managers in arrays for lists, prompt user needed info about the new employee
 function newEmployee(roles,managers){
     var employee = [];
     inquirer.prompt([
@@ -228,20 +250,23 @@ function newEmployee(roles,managers){
 
     ])
     .then(function(answer){
+        // get the role ID and Mgr ID from list strings and make into integers
         var role_id = parseInt((answer.role_id).slice(0,3));
         var mgr_id = parseInt((answer.manager).slice(0,3));
         
+        // use Employee class for answer
         employee = new classes.Employee(answer.fName,answer.lName,role_id,mgr_id);
     })
     .then(function(){
         
+        // send the EE object to query.js for database add of new EE
         query.addEmployee(employee);
     })
     
     
 };
 
-// Export inquirer functions
+// Export functions for reference on query.js file
 module.exports.kickoff = kickoff;
 module.exports.view = view;
 module.exports.add = add;
