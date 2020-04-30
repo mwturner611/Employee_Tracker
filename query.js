@@ -1,7 +1,7 @@
 // Require mysql 
 var mysql = require("mysql");
 var questions = require("./questions.js");
-var index = require("./index.js");
+
 
 
 // create route to mysql database on local host
@@ -73,26 +73,6 @@ function deptsQuery(){
         });
 };
 
-// Specific department
-function deptQuery(dept){
-    var query = "SELECT * FROM department WHERE ?";
-
-    connection.query(query, {name: dept}, function(err, results) {
-        if(err){throw err}
-        else if(results.length === 0){
-            error();
-
-            questions.view();
-        }
-        else{
-        console.table(results);
-
-        questions.kickoff();
-        }} 
-    )
-};
-
-
 // All Roles as a table
 function rolesQuery(){
     connection.query(
@@ -102,6 +82,24 @@ function rolesQuery(){
             console.table(results);
 
             questions.kickoff();
+        });
+};
+
+//All Departments as a list for new role
+function deptsList(){
+    var depts = [];
+
+    connection.query(
+        "SELECT * FROM department", function(err,results){
+            if(err) throw err;
+            for (var i = 0; i < results.length; i++){
+                var newid = results[i].id;
+                var newName = results[i].name;
+                var idName = newid + " " + newName;
+                depts.push(idName);
+            }
+            questions.newRole(depts);
+            
         });
 };
 
@@ -156,10 +154,27 @@ function addEmployee(employee){
     },function(err,results) {
         if(err){throw err}
         console.log("Employee Added Successfully!")
-        index.start();
+        questions.kickoff();
     })
   
 }
+
+// Add a role
+function addRole(role){
+
+    connection.query("INSERT INTO role SET ?",
+    {
+        title: role.title,
+        salary: role.salary,
+        department_id: role.department_id
+    },function(err,results) {
+        if(err){throw err}
+        console.log("Role Added Successfully!")
+        questions.kickoff();
+    }
+    )
+}
+
 // Specific role
 function roleQuery(role){
     var query = "SELECT * FROM role WHERE ?";
@@ -212,8 +227,10 @@ module.exports.eeQuery = eeQuery;
 module.exports.deptsQuery = deptsQuery;
 module.exports.rolesQuery = rolesQuery;
 module.exports.orgChartQuery = orgChartQuery;
-module.exports.deptQuery = deptQuery;
+
 module.exports.roleQuery = roleQuery;
 module.exports.rolesList = rolesList;
 module.exports.connection = connection;
 module.exports.addEmployee = addEmployee;
+module.exports.deptsList = deptsList;
+module.exports.addRole = addRole;

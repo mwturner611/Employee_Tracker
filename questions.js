@@ -132,7 +132,7 @@ function add(){
                 query.rolesList();
                 break;
             case "Role":
-                newRole();
+                query.deptsList();
                 break;
             case "Department":
                 newDepartment();
@@ -145,6 +145,39 @@ function add(){
 }
 
 
+// add a new role function
+function newRole(depts){
+    var role = [];
+
+    inquirer.prompt([
+        {
+            name:"title",
+            type: "input",
+            message: "What is the title for this role?"
+        },
+        {
+            name:"salary",
+            type: "input",
+            message: "What is the salary for this role?"
+        },
+        {
+            name:"dpt",
+            type: "list",
+            message: "What department should it be in?",
+            choices: depts
+        },
+    ])
+    .then(function(answer){
+        var dept_id = parseInt((answer.dpt).slice(0,3));
+
+        var salary = parseInt(answer.salary);
+                
+        role = new classes.Role(answer.title,salary,dept_id);
+    })
+    .then(function(){
+        query.addRole(role);
+    })
+};
 
 // Add a new employee function
 function newEmployee(roles,managers){
@@ -177,7 +210,7 @@ function newEmployee(roles,managers){
     .then(function(answer){
         var role_id = parseInt((answer.role_id).slice(0,3));
         var mgr_id = parseInt((answer.manager).slice(0,3));
-        // employee.push(answer.fName,answer.lName,role_id,mgr_id)
+        
         employee = new classes.Employee(answer.fName,answer.lName,role_id,mgr_id);
     })
     .then(function(){
@@ -195,3 +228,4 @@ module.exports.add = add;
 module.exports.transfer = transfer;
 module.exports.quit = quit;
 module.exports.newEmployee = newEmployee;
+module.exports.newRole = newRole;
