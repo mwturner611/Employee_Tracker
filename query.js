@@ -42,24 +42,9 @@ function eesQuery(){
         });
 };
 
-// Specific employee
-function eeQuery(lastName){
-    var query = "SELECT * FROM employee WHERE ?";
 
-    connection.query(query, {last_name: lastName}, function(err, results) {
-        if(err){throw err}
-        else if(results.length === 0){
-            error();
 
-            questions.view();
-        }
-        else{
-        console.table(results);
 
-        questions.kickoff();
-        }} 
-    )
-};
 
 // All Departments as a table
 function deptsQuery(){
@@ -100,6 +85,41 @@ function deptsList(){
             }
             questions.newRole(depts);
             
+        });
+};
+
+// All EEs and titles as lists for EE transfer
+function eeList(){
+    var roles = [];
+    var ees = [];
+
+    var query1 = "SELECT id, title FROM role";
+
+    var query2 = "SELECT id, last_name FROM employee";
+
+    connection.query(query1, function(err,results){
+            if(err) throw err;
+
+            for (var i = 0; i < results.length; i++){
+                var newID = results[i].id;
+                var newTitle = results[i].title;
+                var idTitle = newID + " " + newTitle;
+                roles.push(idTitle);
+            }
+
+            
+            connection.query(query2, function(err,results){
+                    if(err) throw err;
+        
+                    for (var i = 0; i < results.length; i++){
+                        var id = results[i].id;
+                        var last_name = results[i].last_name;
+                        var idLname = id + " " + last_name;
+                        ees.push(idLname);
+                      }
+                      questions.transfer(roles,ees);
+                });
+                
         });
 };
 
@@ -188,6 +208,26 @@ function addDepartment(newDept){
     )
 };
 
+// Change an employee's role
+function updateEE(ee_id,role_id){
+    connection.query("UPDATE employee SET ? WHERE ?",
+    [
+        {
+            role_id: role_id
+        },
+        {
+            id: ee_id
+        }
+
+    ],
+    function(err,results){
+        if(err){throw err}
+        console.log("EE Sucessfully Transferred!")
+        questions.kickoff();
+    }
+    )
+}
+
 // Specific role
 function roleQuery(role){
     var query = "SELECT * FROM role WHERE ?";
@@ -232,7 +272,40 @@ function orgChartQuery (){
         });
 }
 
+// Specific employee
+function eeQuery(lastName){
+    // Select columns
+    var query = "SELECT e1.id,e1.first_name,e1.last_name,e1.role_id,r1.title,r1.salary,r1.department_id,d1.name AS dept_name,CONCAT(e2.first_name,' ',e2.last_name) AS Mgr_Name,r2.title AS Mgr_Title ";
 
+    // self join employee table for manager info
+    query += "FROM employee e1 JOIN employee e2 ON e1.manager_id = e2.role_id ";
+
+    // join role table to employee 1
+    query += "JOIN role r1 ON e1.role_id = r1.id "
+
+    // join role table again to employee 2
+    query += "JOIN role r2 ON e2.role_id = r2.id "
+
+    // join department table to employee 1
+    query += "JOIN department d1 ON r1.department_id = d1.id "
+
+    // criteria
+    query += "WHERE (e1.last_name = ?)"
+    
+    connection.query(query,[lastName], function(err, results) {
+        if(err){throw err}
+        else if(results.length === 0){
+            error();
+
+            questions.view();
+        }
+        else{
+        console.table(results);
+
+        questions.kickoff();
+        }} 
+    )
+};
 
 // EXPORT ALL QUERY FUNCTIONS
 module.exports.eesQuery = eesQuery;
@@ -247,3 +320,5 @@ module.exports.connection = connection;
 module.exports.addEmployee = addEmployee;
 module.exports.deptsList = deptsList;
 module.exports.addRole = addRole;
+module.exports.eeList = eeList;
+module.exports.updateEE = updateEE;

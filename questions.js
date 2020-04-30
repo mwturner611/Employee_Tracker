@@ -21,7 +21,7 @@ function kickoff(){
                 add();
                 break;
             case "Transfer an Employee":
-                transfer();
+                query.eeList();
                 break;
             case "Quit":
                 quit();
@@ -91,32 +91,6 @@ function quit(){
     });
 }
 
-function transfer(){
-    console.log("Write Transfer function")
-
-    // inquirer.prompt({
-    //     name: "update",
-    //     type: "list",
-    //     message: "Who would you like to Update?",
-    //     choices: [""]
-    // })
-    // .then(function(answer){
-    //     switch(answer.update){
-    //         case "View":
-    //             view();
-    //             break;
-    //         case "Add New":
-    //             add();
-    //             break;
-    //         case "Update Existing":
-    //             update();
-    //             break;
-    //         case "Quit":
-    //             quit();
-    //             break;
-    //     }
-    // })
-}
 
 // Add function
 function add(){
@@ -194,6 +168,36 @@ function newRole(depts){
         query.addRole(role);
     })
 };
+
+// transfer an employee to a new role
+function transfer(roles,ees){
+    var ee_id = 0;
+    var role_id = 0;
+
+    inquirer.prompt([
+        {
+            name: "ee",
+            type: "list",
+            message: "What employee would you like to transfer?",
+            choices: ees
+        },
+        {
+            name: "role",
+            type: "list",
+            message: "What role would you like to transfer them into?",
+            choices: roles
+        },
+    ])
+    .then(function(answer){
+        ee_id = parseInt((answer.ee).slice(0,3));
+        role_id = parseInt((answer.role).slice(0,3));
+    })
+    .then(function(){
+        query.updateEE(ee_id,role_id)
+    })
+
+};
+
 
 // Add a new employee function
 function newEmployee(roles,managers){
